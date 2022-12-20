@@ -17,43 +17,34 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
-client.connect((err) => {
-  const inputCollection = client
-    .db("taskData")
-    .collection("taskData_collection");
 
-  // INSERT INPUT DATA AT THE DATABASE
-  app.post("/addInputData", async (req, res) => {
-    try {
-      const data = await req.body;
-      const result = await inputCollection.insertOne(data);
-      res.send(result.acknowledged);
-    } catch (error) {
-      console.log("err", error);
-    }
-  });
+const inputCollection = client.db("taskData").collection("taskData_collection");
 
-  //GET THE INPUT DATA
-  // app.get("/getInputData", async (req, res) => {
-  //   try {
-  //     const data = await inputCollection.find().toArray();
-  //     if (data.length > 0) {
-  //       res.send(data);
-  //     }
-  //   } catch (error) {
-  //     console.log("err", error);
-  //   }
-  // });
-
-  // mongodb connected message
-  console.log("database connected");
+// INSERT INPUT DATA AT THE DATABASE
+app.post("/addInputData", async (req, res) => {
+  try {
+    const data = await req.body;
+    const result = await inputCollection.insertOne(data);
+    res.send(result.acknowledged);
+  } catch (error) {
+    console.log("err", error);
+  }
 });
+
+//get all product from collection
+app.get("/getInputData", async (req, res) => {
+  const result = await inputCollection.find({}).toArray();
+  res.send(result);
+});
+
+// mongodb connected message
+console.log("database connected");
 
 // root url route
 app.get("/", (req, res) => {
   res.send("Hello world");
 });
 
-app.listen(process.env.PORT || 8000, () => {
+app.listen(process.env.PORT || 5000, () => {
   console.log("app listening");
 });
