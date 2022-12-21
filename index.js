@@ -37,6 +37,33 @@ app.get("/getInputData", async (req, res) => {
   res.send(result);
 });
 
+//update data
+app.patch("/updateData/:id", async (req, res) => {
+  console.log(req.body, "this is body");
+  console.log(req.body.editName);
+  console.log(req.body.editSelecedtData);
+
+  const dataId = req.body.id;
+  console.log(dataId, "this is id");
+
+  await inputCollection
+    .updateOne(
+      { _id: ObjectId(dataId) },
+      {
+        $set: {
+          name: req.body.editName,
+          selecedtData: req.body.editSelecedtData,
+        },
+      }
+    )
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});
+
 // mongodb connected message
 console.log("database connected");
 
